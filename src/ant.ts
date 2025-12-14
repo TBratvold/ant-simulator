@@ -4,26 +4,30 @@ export type Ant = {
     speed: number;
 }
 
-export function createAnt(x:number, y:number): Ant{
+export function spawnAnt(x:number, y:number): Ant{
+    let direction:number = Math.random() * 2 * Math.PI
     return {
         position: {x: x, y: y},
-        direction: {x: 1, y: 0},
+        direction: {x: Math.cos(direction), y: Math.sin(direction)},
         speed: 0.1
     };
 }
 
 export function updateDirection(ant: Ant): void{
+    let newDirection:number = getForwardishDirection(ant, 10);
+    // let newDirection:number = getRandomDirection();
+    ant.direction = {x: Math.cos(newDirection), y: Math.sin(newDirection)};
 
-    let length:number = 0;
-    let x: number = 0;
-    let y: number = 0;
-    while(length === 0){
-        x = Math.random() * 2 - 1;
-        y = Math.random() * 2 - 1;
-        length = Math.hypot(x,y);
-    }
+}
 
-    ant.direction = {x: x/length, y: y/length};
+function getForwardishDirection(ant:Ant, varianceDegrees:number){
+    const directionVariance: number = varianceDegrees * Math.PI/180;
+    let directionChange: number = Math.random() * (2 * directionVariance) - (directionVariance);
+    return Math.atan2(ant.direction.y, ant.direction.x) + directionChange;
+}
+
+function getRandomDirection(){
+    return Math.random() * 2 * Math.PI;
 }
 
 export function step(ant: Ant, delta: number): void{

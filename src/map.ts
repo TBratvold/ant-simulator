@@ -1,16 +1,21 @@
 import renderer from "./renderer";
 import type { Ant } from "./ant";
-import { updateDirection, step, createAnt } from "./ant";
-
+import { updateDirection, step, spawnAnt } from "./ant";
+import type { Trail } from "./trail";
+import { spawnTrail } from "./trail";
 
 const speed: number = 0.03;
 let x: number = 0;
-let ant:Ant;
-let count:number = 0;
+const ants:Ant[] = [];
+let trails:Trail[] = [];
+const antCount:number = 10;
+
 renderer(
     ({ canvas, ctx }) => {
         const { width, height } = canvas;
-        ant = createAnt(width/2, height/2);
+        for (let i = 0; i < antCount; i++){
+            ants.push(spawnAnt(width/2, height/2));
+        }
     },
     (delta, { canvas, ctx }) => {
         const { width, height } = canvas;
@@ -19,24 +24,30 @@ renderer(
         ctx.fillStyle = `rgb(40,40,60)`;
         ctx.fillRect(0, 0, width, height);
 
-        count++;
-        count = count % 100;
-        if(count === 0){
-            updateDirection(ant);
+        trails = trails.filter(trail => trail.age < trail.maxAge);
+        for (const trail of trails){
+            trail.age++;
+            ctx.fillStyle = `rgba(60,20,40,${(trail.maxAge - trail.age)/trail.maxAge})`;
+            ctx.fillRect(trail.position.x-2, trail.position.y-2, 4, 4);
+
         }
 
-        step(ant, delta);
+        for (const ant of ants){
+            updateDirection(ant);
+            step(ant, delta);
+            trails.push(spawnTrail(ant.position.x, ant.position.y));
 
-        // Let ant 'wrap' around the canvas
-        ant.position = {
-            x: ((ant.position.x % width) + width) % width, 
-            y: ((ant.position.y % height) + height) % height
-        };
-        
-        ctx.fillStyle = `rgb(90,20,20)`;
-        ctx.fillRect(ant.position.x-5, ant.position.y-5, 10, 10);
-        ctx.fillStyle = `rgb(20,255,20)`;
-        ctx.fillRect((ant.position.x-1) + (ant.direction.x * 5), (ant.position.y-1) + (ant.direction.y * 5), 2, 2);
+            // Let ant 'wrap' around the canvas
+            ant.position = {
+                x: ((ant.position.x % width) + width) % width, 
+                y: ((ant.position.y % height) + height) % height
+            };
+            
+            ctx.fillStyle = `rgb(90,20,20)`;
+            ctx.fillRect(ant.position.x-5, ant.position.y-5, 10, 10);
+            ctx.fillStyle = `rgb(20,120,20)`;
+            ctx.fillRect((ant.position.x-1) + (ant.direction.x * 5), (ant.position.y-1) + (ant.direction.y * 5), 2, 2);
+        }
 
     }
 );
