@@ -1,6 +1,6 @@
 import renderer from "./renderer";
 import type { Ant } from "./ant";
-import { updateDirection, step, spawnAnt } from "./ant";
+import { updateDirection, step, spawnAnt, followTrail } from "./ant";
 import type { Trail } from "./trail";
 import { spawnTrail } from "./trail";
 
@@ -8,7 +8,8 @@ const speed: number = 0.03;
 let x: number = 0;
 const ants:Ant[] = [];
 let trails:Trail[] = [];
-const antCount:number = 10;
+const antCount:number = 8;
+let count:number = 0
 
 renderer(
     ({ canvas, ctx }) => {
@@ -24,6 +25,8 @@ renderer(
         ctx.fillStyle = `rgb(40,40,60)`;
         ctx.fillRect(0, 0, width, height);
 
+        count++;
+
         trails = trails.filter(trail => trail.age < trail.maxAge);
         for (const trail of trails){
             trail.age++;
@@ -33,9 +36,13 @@ renderer(
         }
 
         for (const ant of ants){
-            updateDirection(ant);
+            if (ant.followTrail){
+                followTrail(ant, trails);
+            } else {
+                updateDirection(ant)
+                trails.push(spawnTrail(ant.position.x, ant.position.y));
+            }
             step(ant, delta);
-            trails.push(spawnTrail(ant.position.x, ant.position.y));
 
             // Let ant 'wrap' around the canvas
             ant.position = {
