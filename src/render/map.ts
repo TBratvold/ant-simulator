@@ -1,8 +1,8 @@
 import renderer from "./renderer";
-import type { Ant } from "./ant";
-import { updateDirection, step, spawnAnt, followTrail } from "./ant";
-import type { Trail } from "./trail";
-import { spawnTrail } from "./trail";
+import type { Ant } from "../sim/ant";
+import { updateDirection, step, spawnAnt, followTrail } from "../sim/ant";
+import type { Trail } from "../sim/trail";
+import { spawnTrail } from "../sim/trail";
 
 const speed: number = 0.03;
 let x: number = 0;
