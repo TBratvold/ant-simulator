@@ -10,6 +10,7 @@ export type Ant = {
     direction: Direction;
     speed: number;
     followTrail: boolean;
+    visionRange: number;
 }
 
 export function spawnAnt(position: Vec2): Ant{
@@ -18,13 +19,14 @@ export function spawnAnt(position: Vec2): Ant{
         position: {...position},
         direction: Direction.rad(direction),
         speed: 0.1,
-        followTrail: direction > Math.PI
+        followTrail: direction > Math.PI,
+        visionRange: 10
     };
 }
 
 export function followTrail(ant:Ant, trails:Trail[]): void{
     trails = trails.filter(trail => {
-        return absoluteDistanceBetween(trail.position, ant.position) < 10
+        return absoluteDistanceBetween(trail.position, ant.position) < ant.visionRange;
     });
 
     if (trails.length < 1) {

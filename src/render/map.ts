@@ -4,6 +4,7 @@ import { updateDirection, step, spawnAnt, followTrail } from "../sim/ant";
 import type { Trail } from "../sim/trail";
 import { spawnTrail } from "../sim/trail";
 import type { Vec2 } from "../type/direction";
+import { renderAnt, renderAntVisionRange } from "./ant";
 
 const ants:Ant[] = [];
 let trails:Trail[] = [];
@@ -48,11 +49,9 @@ renderer(
                 x: ((ant.position.x % width) + width) % width, 
                 y: ((ant.position.y % height) + height) % height
             };
-            
-            ctx.fillStyle = `rgb(90,20,20)`;
-            ctx.fillRect(ant.position.x-5, ant.position.y-5, 10, 10);
-            ctx.fillStyle = `rgb(20,120,20)`;
-            ctx.fillRect((ant.position.x-1) + (ant.direction.unit.x * 5), (ant.position.y-1) + (ant.direction.unit.y * 5), 2, 2);
+
+            // renderAntVisionRange(ant, ctx);
+            renderAnt(ant, ctx);
         }
 
     }
