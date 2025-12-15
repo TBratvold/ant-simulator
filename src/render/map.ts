@@ -1,6 +1,6 @@
 import renderer from "./renderer";
 import type { Ant } from "../sim/ant";
-import { updateDirection, step, spawnAnt, followTrail } from "../sim/ant";
+import { updateDirection, step, spawnAnt, followTrail, avoidTrail } from "../sim/ant";
 import type { Trail } from "../sim/trail";
 import { spawnTrail } from "../sim/trail";
 import type { Vec2 } from "../type/direction";
@@ -37,10 +37,21 @@ renderer(
         for (const ant of ants){
             if (ant.followTrail){
                 followTrail(ant, trails);
+                ctx.fillStyle = `rgb(90,0,0)`;
+            // } else if (ant.avoidTrail) {
+            //     avoidTrail(ant, trails);
+            //     trails.push(spawnTrail(ant.position));
+            //     ctx.fillStyle = `rgb(0,90,0)`;
             } else {
-                updateDirection(ant)
+                avoidTrail(ant, trails);
                 trails.push(spawnTrail(ant.position));
+                ctx.fillStyle = `rgb(0,90,0)`;
             }
+            // } else {
+            //     updateDirection(ant)
+            //     trails.push(spawnTrail(ant.position));
+            //     ctx.fillStyle = `rgb(0,0,90)`;
+            // }
             step(ant, delta);
 
             // Let ant 'wrap' around the canvas
@@ -49,10 +60,14 @@ renderer(
                 y: ((ant.position.y % height) + height) % height
             };
             
-            ctx.fillStyle = `rgb(90,20,20)`;
+            // ctx.fillStyle = `rgb(90,20,20)`;
             ctx.fillRect(ant.position.x-5, ant.position.y-5, 10, 10);
             ctx.fillStyle = `rgb(20,120,20)`;
             ctx.fillRect((ant.position.x-1) + (ant.direction.unit.x * 5), (ant.position.y-1) + (ant.direction.unit.y * 5), 2, 2);
+            ctx.fillStyle = `rgb(200,200,200)`;
+            ctx.beginPath();
+            ctx.arc(ant.position.x, ant.position.y, ant.visionRange, 0, Math.PI * 2);
+            ctx.stroke(); // or ctx.fill()
         }
 
     }
