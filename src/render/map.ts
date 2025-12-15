@@ -1,7 +1,8 @@
-import renderer from "./renderer";
-import { renderAnt, renderAntVisionRange } from "./ant";
 import type { SimulationState } from "../sim/simulation";
 import { Simulation,  } from "../sim/simulation";
+import renderer from "./renderer";
+import { renderAnt, renderAntVisionRange } from "./ant";
+import { renderTrail } from "./trail";
 
 let simulation: Simulation;
 let state: SimulationState;
@@ -9,7 +10,7 @@ let state: SimulationState;
 renderer(
     ({ canvas, ctx }) => {
         const { width, height } = canvas;
-        simulation = new Simulation(width, height, 8);
+        simulation = new Simulation(width, height, 12);
     },
     (delta, { canvas, ctx }) => {
         const { width, height } = canvas;
@@ -21,8 +22,7 @@ renderer(
         state = simulation.update(delta);
 
         for (const trail of state.trails) {
-            ctx.fillStyle = `rgba(60,20,40,${(trail.maxAge - trail.age)/trail.maxAge})`;
-            ctx.fillRect(trail.position.x-2, trail.position.y-2, 4, 4);
+            renderTrail(trail, ctx)
         }
 
         for (const ant of state.ants) {
