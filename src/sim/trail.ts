@@ -1,12 +1,14 @@
+import type { Vec2 } from "../type/direction";
+
 export type Trail = {
-    position: {x:number, y:number};
+    position: Vec2;
     age: number;
     maxAge: number;
 }
 
-export function spawnTrail(x:number, y:number): Trail{
+export function spawnTrail(position: Vec2): Trail{
     return {
-        position: {x:x, y:y},
+        position: {...position},
         age: 0,
         maxAge: 500
     };
