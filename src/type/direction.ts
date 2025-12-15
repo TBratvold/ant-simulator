@@ -18,15 +18,15 @@ export class Direction {
         this._rad = wrapRad(rad);
     }
 
-    static fromRadians(rad: number): Direction{
+    static rad(rad: number): Direction{
         return new Direction(rad);
     }
 
-    static fromDegrees(deg: number): Direction{
+    static deg(deg: number): Direction{
         return new Direction(deg * (Math.PI/180));
     }
 
-    static fromUnit(x:number, y:number): Direction{
+    static unit(x:number, y:number): Direction{
         const len = Math.hypot(x, y);
         if (len === 0){
             return new Direction(0);
