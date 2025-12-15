@@ -29,11 +29,13 @@ export function followTrail(ant:Ant, trails:Trail[]): void{
         ant.direction = {x: Math.cos(newAngle), y: Math.sin(newAngle)};
         return;
     } else if (trails.length > 1) {
-        let antDirection = Math.atan2(ant.direction.y, ant.direction.x);
+        let antDirection:number = Math.atan2(ant.direction.y, ant.direction.x);
         trails.sort((a, b) => {
             let directionToA: number = Math.atan2(a.position.y - ant.position.y, a.position.x - ant.position.x);
             let directionToB: number = Math.atan2(b.position.y - ant.position.y, b.position.x - ant.position.x);
-            return Math.abs(directionToA - antDirection) - Math.abs(directionToB - antDirection);
+            let directionDiffToA: number = Math.atan2(Math.sin(directionToA - antDirection), Math.cos(directionToA - antDirection));
+            let directionDiffToB: number = Math.atan2(Math.sin(directionToB - antDirection), Math.cos(directionToB - antDirection));
+            return Math.abs(directionDiffToA) - Math.abs(directionDiffToB);
         })
     }
 
