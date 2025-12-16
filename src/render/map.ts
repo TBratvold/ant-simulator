@@ -10,7 +10,7 @@ let state: SimulationState;
 renderer(
     ({ canvas, ctx }) => {
         const { width, height } = canvas;
-        simulation = new Simulation(width, height, 12);
+        simulation = new Simulation(width, height, 80);
     },
     (delta, { canvas, ctx }) => {
         const { width, height } = canvas;
